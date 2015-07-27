@@ -9,7 +9,7 @@
 #   2) a Maya Binary file called out.mb
 
 import sys
-sys.path.insert(0, "/Applications/Autodesk/maya2015/Maya.app/Contents/Frameworks/Python.framework/Versions/Current/lib/python2.7/site-packages")
+#sys.path.insert(0, "/Applications/Autodesk/maya2015/Maya.app/Contents/Frameworks/Python.framework/Versions/Current/lib/python2.7/site-packages")
 import maya.standalone
 maya.standalone.initialize()
 import maya.cmds as cmds
@@ -48,14 +48,13 @@ def generate(pts):
 def export_mb(name):
     cmds.file(rename = name + ".mb")
     cmds.file(save = True, type = "mayaBinary")
-    os.system("cp /private/var/root/Documents/maya/projects/default/scenes/" + name + ".mb " + os.getcwd() + "/" + name + ".mb")
+    os.system("cp /private/var/root/Documents/maya/projects/default/scenes/" + name + ".mb " + os.path.dirname(os.path.realpath(__file__)) + "/" + name + ".mb")
 
 # Exports file as an OBJ
 def export_obj(name):
     cmds.loadPlugin('objExport')
-    obj_path = os.getcwd() + "/" + name + ".obj"
+    obj_path = os.path.dirname(os.path.realpath(__file__)) + "/" + name + ".obj"
     mel.eval('file -force -options "groups=1;ptgroups=1;materials=1;smoothing=1;normals=1" -type "OBJexport" -pr -ea "%s";' % obj_path)
-
 
 # Main Program
 points = read_csv()

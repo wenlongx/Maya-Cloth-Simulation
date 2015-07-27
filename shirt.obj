@@ -1,6 +1,6 @@
 # This file uses centimeters as units for non-parametric coordinates.
 
-mtllib out.mtl
+mtllib shirt.mtl
 g default
 v -1.000000 0.000000 0.000000
 v 1.000000 0.000000 0.000000

@@ -6,7 +6,7 @@
 #   1) an OBJ file called out_vtx.obj, where vtx is the vertex number
 
 import sys
-sys.path.insert(0, "/Applications/Autodesk/maya2015/Maya.app/Contents/Frameworks/Python.framework/Versions/Current/lib/python2.7/site-packages")
+#sys.path.insert(0, "/Applications/Autodesk/maya2015/Maya.app/Contents/Frameworks/Python.framework/Versions/Current/lib/python2.7/site-packages")
 import maya.standalone
 maya.standalone.initialize()
 import maya.cmds as cmds
@@ -51,7 +51,7 @@ def drop_simulation():
 
 # Convert to OBJ
 def export_obj(name):
-    obj_path = os.getcwd() + "/out/" + name
+    obj_path = os.path.dirname(os.path.realpath(__file__)) + "/out/" + name
     for x in VERTICES:
         obj_path += "_" + str(x)
     obj_path += ".obj"
