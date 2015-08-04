@@ -1,0 +1,3 @@
+API  0.0      8 MB warn   302018: type conflict: "outColor" is type color, "maya_color_to_vector" returns type vector
+RC   0.2      8 MB warn   082047: trace turned on since scanline option is off
+IMG  0.2     15 MB warn   102002: type rgba_h not supported by iff format, using default type rgba
