@@ -1,12 +1,9 @@
-# Don't understand this
-# http://knowledge.autodesk.com/support/maya/learn-explore/caas/CloudHelp/cloudhelp/2015/ENU/Maya/files/Python-Python-from-an-external-interpreter-htm.html
-
 # Takes 1 command line arguments
 #   1) string; path to CSV point file
 
-# Generates in your current directory
-#   1) an OBJ file called out.obj
-#   2) a Maya Binary file called out.mb
+# Generates files in the /models/ directory
+#   1) an OBJ file called shirt.obj
+#   2) a Maya Binary file called shirt.mb
 
 import sys
 #sys.path.insert(0, "/Applications/Autodesk/maya2015/Maya.app/Contents/Frameworks/Python.framework/Versions/Current/lib/python2.7/site-packages")
@@ -41,22 +38,30 @@ def generate(pts):
     """Takes in a list of tuples (set of 3D points) and generates a polygon model"""
     cmds.polyCreateFacet(name="shirt", p=points)
     cmds.polyTriangulate()
+    cmds.polyQuad(angle=90)
     cmds.polySubdivideFacet(dv=SUBDIVISIONS)
     cmds.polyTriangulate()
-
+    
+    # Center shirt on origin
+    centerX = cmds.objectCenter("shirt", x = True, gl = True)
+    centerY = cmds.objectCenter("shirt", y = True, gl = True)
+    centerZ = cmds.objectCenter("shirt", z = True, gl = True)
+    cmds.move(-centerX, -centerY, -centerZ, "shirt", absolute=True)
+    
 # Exports file as a Maya Binary
 def export_mb(name):
     cmds.file(rename = name + ".mb")
     cmds.file(save = True, type = "mayaBinary")
-    os.system("cp /private/var/root/Documents/maya/projects/default/scenes/" + name + ".mb " + os.path.dirname(os.path.realpath(__file__)) + "/" + name + ".mb")
+    os.system("cp /private/var/root/Documents/maya/projects/default/scenes/" + name + ".mb " + os.path.dirname(os.path.realpath(__file__)) + "/models/" + name + ".mb")
 
 # Exports file as an OBJ
 def export_obj(name):
     cmds.loadPlugin('objExport')
-    obj_path = os.path.dirname(os.path.realpath(__file__)) + "/" + name + ".obj"
+    obj_path = os.path.dirname(os.path.realpath(__file__)) + "/models/" + name + ".obj"
     mel.eval('file -force -options "groups=1;ptgroups=1;materials=1;smoothing=1;normals=1" -type "OBJexport" -pr -ea "%s";' % obj_path)
 
 # Main Program
 points = read_csv()
 generate(points)
 export_obj(OUT_NAME)
+export_mb(OUT_NAME)

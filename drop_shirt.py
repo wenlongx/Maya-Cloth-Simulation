@@ -2,8 +2,9 @@
 #   1) string; path to OBJ shirt model
 #   2 and up) int; vertices to pin
 
-# Generates an OBJ file in the current directory
-#   1) an OBJ file called out_vtx.obj, where vtx is the vertex number
+# Generates files in the /dropped/ directory
+#   1) an OBJ file called dropped_vtx.obj, where vtx is the vertex number
+#   2) a Maya mb file called dropped_vtx.obj, where vtx is the vertex number
 
 import sys
 #sys.path.insert(0, "/Applications/Autodesk/maya2015/Maya.app/Contents/Frameworks/Python.framework/Versions/Current/lib/python2.7/site-packages")
@@ -14,7 +15,7 @@ import maya.mel as mel
 import os
 import time
 
-OUT_NAME = "out"
+OUT_NAME = "dropped"
 STARTFRAME = 0
 ENDFRAME = 300
 VERTICES = []
@@ -28,7 +29,6 @@ def to_nCloth():
     cmds.select(clear = True)
     cmds.select("shirt")
     mel.eval("doCreateNCloth 0;")
-
 # Pin vertices
 def pin_vertex(vtx):
     """Takes in a vertex number"""
@@ -36,7 +36,6 @@ def pin_vertex(vtx):
     cmds.select(clear = True)
     cmds.select(shirt_vertex)
     mel.eval("createNConstraint transform 1;")
-
 # Drop Shirt model
 def drop_simulation():
     start = time.time()
@@ -48,10 +47,9 @@ def drop_simulation():
     cmds.currentTime(ENDFRAME)
     end = time.time()
     return end-start
-
 # Convert to OBJ
 def export_obj(name):
-    obj_path = os.path.dirname(os.path.realpath(__file__)) + "/out/" + name
+    obj_path = os.path.dirname(os.path.realpath(__file__)) + "/dropped/" + name
     for x in VERTICES:
         obj_path += "_" + str(x)
     obj_path += ".obj"
@@ -59,6 +57,15 @@ def export_obj(name):
     cmds.select(clear = True)
     cmds.select("shirt")
     mel.eval('file -force -options "groups=1;ptgroups=1;materials=1;smoothing=1;normals=1" -typ "OBJexport" -pr -es "%s";' % obj_path)
+# Export as Maya binary
+def export_mb(name):
+    obj_name = name
+    for x in VERTICES:
+        obj_name += "_" + str(x)
+    obj_name += ".mb"
+    cmds.file(rename = obj_name)
+    cmds.file(save = True, type = "mayaBinary")
+    os.system("cp /private/var/root/Documents/maya/projects/default/" + obj_name + " " + os.path.dirname(os.path.realpath(__file__)) + "/dropped/" + obj_name)
 
 
 # Main program
@@ -70,11 +77,4 @@ for x in VERTICES:
 time_elapsed = drop_simulation()
 print("Simulation took " + str(time_elapsed) + " seconds to run")
 export_obj(OUT_NAME)
-
-
-'''
-# Save a Maya Binary for Reference
-cmds.file(rename = "out_2.mb")
-cmds.file(save = True, type = "mayaBinary")
-os.system("cp /private/var/root/Documents/maya/projects/default/out_2.mb ~/Desktop/out_2.mb")
-'''
+export_mb(OUT_NAME)

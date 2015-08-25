@@ -45,14 +45,13 @@ def export_obj(name):
 def render():
     # create camera
     cam = mel.eval('camera -centerOfInterest 5 -focalLength 35 -cameraScale 1;')
-    mel.eval('objectMoveCommand; cameraMakeNode 2 "";')
+    mel.eval('objectMoveCommand; cameraMakeNode 2 ;')
     #mel.eval('rename |camera1_group|camera1 "cam" ;')
     #mel.eval('rename |camera1_group|camera1_aim "cam_aim" ;')
     cmds.select(clear=True)
     cmds.select("camera1")
-    cmds.move(0, CAMERA_HEIGHT, 0, absolute=True, worldSpace=True, worldSpaceDistance=True)
-    cmds.select("camera1_aim")
-    cmds.move(0, 0, 0, absolute=True, worldSpace=True, worldSpaceDistance=True)
+    
+
 
     # render settings
     mel.eval('setAttr "frontShape.renderable" 0;')
