@@ -15,11 +15,14 @@ import csv
 import os
 import getpass
 
-OSX_MB_DEFAULT_DIRECTORY = "/private/var/root/Documents/maya/projects/default/"
-UBUNTU_MB_DEFAULT_DIRECTORY = "/home/" + str(getpass.getuser()) + "/maya/projects/default/scenes/"
+OSX_RENDER_DIR = "/Users/" + str(getpass.getuser()) + "/Documents/maya/projects/default/images/"
+OSX_MB_DIR = "/Users/" + str(getpass.getuser()) + "/Documents/maya/projects/default/"
+UBUNTU_RENDER_DIR = "/home/" + str(getpass.getuser()) + "/maya/projects/default/images/"
+UBUNTU_MB_DIR = "/home/" + str(getpass.getuser()) + "/maya/projects/default/"
 
 # System specific paths
-MB_DEFAULT_DIRECTORY = UBUNTU_MB_DEFAULT_DIRECTORY
+RENDER_DEFAULT_DIRECTORY = OSX_RENDER_DIR
+MB_DEFAULT_DIRECTORY = OSX_MB_DIR
 
 SUBDIVISIONS = 3
 OUT_NAME = "shirt"

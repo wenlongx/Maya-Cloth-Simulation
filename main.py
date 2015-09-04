@@ -18,7 +18,6 @@
 # Ubuntu Mayapy path
 # /usr/autodesk/maya2015-x64/bin/mayapy
 
-
 import sys
 import maya.standalone
 maya.standalone.initialize()
@@ -33,20 +32,20 @@ import presets
 import csv
 import getpass
 
-OSX_RENDER_DIR = "/private/var/root/Documents/maya/projects/default/images/"
-OSX_MB_DIR = "/private/var/root/Documents/maya/projects/default/"
+OSX_RENDER_DIR = "/Users/" + str(getpass.getuser()) + "/Documents/maya/projects/default/images/"
+OSX_MB_DIR = "/Users/" + str(getpass.getuser()) + "/Documents/maya/projects/default/"
 UBUNTU_RENDER_DIR = "/home/" + str(getpass.getuser()) + "/maya/projects/default/images/"
 UBUNTU_MB_DIR = "/home/" + str(getpass.getuser()) + "/maya/projects/default/"
+
+# System specific paths
+RENDER_DEFAULT_DIRECTORY = OSX_RENDER_DIR
+MB_DEFAULT_DIRECTORY = OSX_MB_DIR
 
 # Correct Version
 if sys.version_info[0] >= 3:
     get_input = input
 else:
     get_input = raw_input
-
-# System specific paths
-RENDER_DEFAULT_DIRECTORY = UBUNTU_RENDER_DIR
-MB_DEFAULT_DIRECTORY = UBUNTU_MB_DIR
 
 # in terms of frames
 SETTLE_TIME = 100
@@ -143,7 +142,7 @@ def start():
         print("The fold took " + str(time.clock() - start_time) + " seconds")
 	
 	# change permissions
-	os.system("sudo chown -R " + str(getpass.getuser()) + " " + str(os.path.dirname(os.path.realpath(__file__))) + "/folded/")
+	# os.system("sudo chown -R " + str(getpass.getuser()) + " " + str(os.path.dirname(os.path.realpath(__file__))))
 
 # setup functions
 def setup_scene(name=sys.argv[1]):
@@ -282,7 +281,7 @@ def render_frame(out):
 
 # export functions
 def export_mb(name):
-    cmds.file(rename = os.path.dirname(os.path.realpath(__file__)) + "/" + name + ".mb")
+    cmds.file(rename = os.path.dirname(os.path.realpath(__file__)) + "/folded/snapshots/" + name + ".mb")
     cmds.file(save = True, type = "mayaBinary")
     #os.system("cp " + MB_DEFAULT_DIRECTORY + name + ".mb " + os.path.dirname(os.path.realpath(__file__)) + "/folded/snapshots/" + name + ".mb")
 def export_obj(name):
@@ -299,10 +298,11 @@ def get_cp():
         os.path.dirname(os.path.realpath(__file__))
         reader = csv.reader(f)
         num_points = sum(1 for row in reader)
-
     return num_points
 def save_cp(name, num_cp):
     #os.system("touch " + os.path.dirname(os.path.realpath(__file__)))
+    if (num_cp < 1):
+        return
     with open(os.path.dirname(os.path.realpath(__file__)) + "/folded/snapshots/" + name + ".csv", "wb") as f:
         writer = csv.writer(f)
         for x in range(num_cp):
