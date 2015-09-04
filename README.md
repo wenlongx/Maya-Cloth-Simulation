@@ -37,14 +37,29 @@ To simulate holding the shirt model from a point(s), run the following, where *p
 The python program accepts 1 or more points, and if there is more than 1 point, will simulate the cloth falling as if all the points were pinned into place. This python program generates both a Maya Binary file called **dropped_point1_...pointn.mb** and an OBJ file called **dropped_point1_...pointn.obj** in the **/dropped/** directory.
 
 ## Simulating model being folded multiple times
-This python program simulates folding a cloth multiple times, and dynamically generates the resulting models and images after each fold performed on the cloth. To simulate holding the model being folded, run the following:
+This python program simulates folding a cloth multiple times, and dynamically generates the resulting models and images after each fold performed on the cloth. To simulate holding the model being folded, run one of the following:
 
     $ path/to/mayapy main.py path/to/shirt_model.obj  
+    $ path/to/mayapy main.py path/to/shirt_model.obj points.csv
 
-This will generate a command line prompt, which explains the rest.  
+The program accepts 1 or 2 command line arguments, and a description of the output files is included at the top of **main.py**. All outputs will be generated in the **/folded/** directory. This will generate a command line prompt, which will explain the rest of the folding process. The optional parameter is a CSV file, which specifies whether to record the progress of the boundary points (ones used to generate the shirt model) as an output CSV file as well. The optional CSV file must be the same one used to generate the shirt_model.obj (first parameter), or a wrong number of boundary points will be recorded. Below are some constants that define how the folding occurs:
+
+### Some Constants
+**SETTLE_TIME** - Time for the cloth to settle to its final position after a fold. Specified in "frames" (conversion is 30 frames to 1 second). Default is 100 frames.  
+**TABLE_SIZE** - Size of the table that holds the shirt model. Specified in arbitrary units. Will be scaled to a size such that the bounding box of the shirt is X% of the table, where X is specified by SHIRT_SCALE.  
+**RETRACT_HEIGHT** - Height to which the gripper will retract to after the fold is finished. Specified in the same arbitrary units as TABLE_SIZE and MOVE_HEIGHT.  
+**MOVE_HEIGHT** - Height at which gripper will perform the fold. Speficied in the same arbitrary units as TABLE_SIZE and RETRACT_HEIGHT  
+**SHIRT_SCALE** - Percentage that the table is scaled to. See TABLE_SIZE. Default is 80%.  
+**GLOBAL_SCALE** - Scales the RETRACT_HEIGHT, MOVE_HEIGHT accordingly   
+**MOVE_SPEED** = Speed at which pointer will move. Specified in terms of ul/frame, where ul is the arbitrary unit used in TABLE_SIZE, RETRACT_HEIGHT, and MOVE_HEIGHT  
+**IMG_PIXELS** - Output image is a square .iff file of this size  
+**STEPS** - You can specify if you want to take snapshots (obj models and csv points) of the shirt model during the fold. STEPS defaults to 0, but setting it to a value greater than 1 results in stopping the fold X times to take snapshots of the model. Times are subdivided equally  
+**NUM_ARMS** - Maximum number of grippers the robot has. Default value is 2 arms.
+**BAXTER_POINTER** - Simulates the folding using a realistic model of the Baxter Research Robot's hand with standard narrow fingers  
+
+
 
 **This section is not yet finished, still under construction**  
 **Features to come:**
-* multiple folds at once
-* GUI
-
+* use sockets to give commands
+* the folder **/in_progress/** is used to hold pieces of code I may or may not come back to

@@ -6,6 +6,11 @@
 #   1) an OBJ file called dropped_vtx.obj, where vtx is the vertex number
 #   2) a Maya mb file called dropped_vtx.obj, where vtx is the vertex number
 
+OSX_MB_DEFAULT_DIRECTORY = "/private/var/root/Documents/maya/projects/default/"
+
+# System specific paths
+MB_DEFAULT_DIRECTORY = OSX_MB_DEFAULT_DIRECTORY
+
 import sys
 #sys.path.insert(0, "/Applications/Autodesk/maya2015/Maya.app/Contents/Frameworks/Python.framework/Versions/Current/lib/python2.7/site-packages")
 import maya.standalone
@@ -65,7 +70,7 @@ def export_mb(name):
     obj_name += ".mb"
     cmds.file(rename = obj_name)
     cmds.file(save = True, type = "mayaBinary")
-    os.system("cp /private/var/root/Documents/maya/projects/default/" + obj_name + " " + os.path.dirname(os.path.realpath(__file__)) + "/dropped/" + obj_name)
+    os.system("cp " + OSX_MB_DEFAULT_DIRECTORY + obj_name + " " + os.path.dirname(os.path.realpath(__file__)) + "/dropped/" + obj_name)
 
 
 # Main program

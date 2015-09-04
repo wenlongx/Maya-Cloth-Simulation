@@ -5,6 +5,11 @@
 #   1) an OBJ file called shirt.obj
 #   2) a Maya Binary file called shirt.mb
 
+OSX_MB_DEFAULT_DIRECTORY = "/private/var/root/Documents/maya/projects/default/"
+
+# System specific paths
+MB_DEFAULT_DIRECTORY = OSX_MB_DEFAULT_DIRECTORY
+
 import sys
 #sys.path.insert(0, "/Applications/Autodesk/maya2015/Maya.app/Contents/Frameworks/Python.framework/Versions/Current/lib/python2.7/site-packages")
 import maya.standalone
@@ -52,7 +57,7 @@ def generate(pts):
 def export_mb(name):
     cmds.file(rename = name + ".mb")
     cmds.file(save = True, type = "mayaBinary")
-    os.system("cp /private/var/root/Documents/maya/projects/default/scenes/" + name + ".mb " + os.path.dirname(os.path.realpath(__file__)) + "/models/" + name + ".mb")
+    os.system("cp " + MB_DEFAULT_DIRECTORY + name + ".mb " + os.path.dirname(os.path.realpath(__file__)) + "/models/" + name + ".mb")
 
 # Exports file as an OBJ
 def export_obj(name):
