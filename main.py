@@ -13,8 +13,16 @@
 # Other Outputs:
 #   1) files called cacheX.xml, where X is the fold number, are generated in /cache/. These files should not be edited/removed. They're used in the Maya binary files to record the simulation of the shirt being folded.
 
-OSX_RENDER_DEFAULT_DIRECTORY = "/private/var/root/Documents/maya/projects/default/images/"
-OSX_MB_DEFAULT_DIRECTORY = "/private/var/root/Documents/maya/projects/default/"
+# Mac OSX Mayapy path
+# /Applications/Autodesk/maya2015/Maya.app/Contents/bin/mayapy
+# Ubuntu Mayapy path
+# /usr/autodesk/maya2015-x64/bin/mayapy
+
+
+OSX_RENDER_DIR = "/private/var/root/Documents/maya/projects/default/images/"
+OSX_MB_DIR = "/private/var/root/Documents/maya/projects/default/"
+UBUNTU_RENDER_DIR = ""
+UBUNTU_MB_DIR = ""
 
 import sys
 import maya.standalone
@@ -36,8 +44,8 @@ else:
     get_input = raw_input
 
 # System specific paths
-RENDER_DEFAULT_DIRECTORY = OSX_RENDER_DEFAULT_DIRECTORY
-MB_DEFAULT_DIRECTORY = OSX_MB_DEFAULT_DIRECTORY
+RENDER_DEFAULT_DIRECTORY = OSX_RENDER_DIR
+MB_DEFAULT_DIRECTORY = OSX_MB_DIR
 
 # in terms of frames
 SETTLE_TIME = 100

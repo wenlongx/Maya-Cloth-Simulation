@@ -12,11 +12,11 @@ A collection of programs that use Autodesk Maya's nucleus engine to simulate act
 - **/main.py** should create an **.obj** file and a **.mb** file in the **/folded/snapshots/** directory, as well as an **.iff** image in the **/folded/images/** directory, for each fold that it performs.
 
 # Setup
-Make sure Autodesk Maya 2015 is installed on your computer; download links for Student/Education can be found [here](http://www.autodesk.com/education/free-software/maya). Make sure Python is installed as well; it can be found [here](https://www.python.org).  
+Make sure Autodesk Maya 2015 is installed on your computer; download links for Student/Education can be found [here](http://www.autodesk.com/education/free-software/maya). Make sure Python is installed as well; it can be found [here](https://www.python.org). For Ubuntu installation, a TXT file is included, with bash commands to set up Maya 2015 (Note: it must be edited to include your serial number before it's run).   
 
 # Usage
 ## Locate mayapy
-The following programs use a Python interpreter called **mayapy** provided by the Autodesk Maya installation. You must use this interpreter (and not your default Python installation). You can find **mayapy** executable in the /bin directory of Maya. For Mac users, it should be located in /Maya.app/Contents/bin.  
+The following programs use a Python interpreter called **mayapy** provided by the Autodesk Maya installation. You must use this interpreter (and not your default Python installation). You can find **mayapy** executable in the /bin directory of Maya. For Mac users, it should be located in /Maya.app/Contents/bin. The full paths can be found in the **main.py** file.  
 
 ## Generating shirt model from CSV file
 Your CSV file should contain 3-Dimensional points in the form X, Y, Z. By default, gravity in the physics simulation is in the -Y direction, so keep this in mind when generating your CSV file. A demo CSV file is stored in the /models/ folder by default.  
