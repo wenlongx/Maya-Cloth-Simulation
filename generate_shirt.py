@@ -5,11 +5,6 @@
 #   1) an OBJ file called shirt.obj
 #   2) a Maya Binary file called shirt.mb
 
-OSX_MB_DEFAULT_DIRECTORY = "/private/var/root/Documents/maya/projects/default/"
-
-# System specific paths
-MB_DEFAULT_DIRECTORY = OSX_MB_DEFAULT_DIRECTORY
-
 import sys
 #sys.path.insert(0, "/Applications/Autodesk/maya2015/Maya.app/Contents/Frameworks/Python.framework/Versions/Current/lib/python2.7/site-packages")
 import maya.standalone
@@ -18,6 +13,13 @@ import maya.cmds as cmds
 import maya.mel as mel
 import csv
 import os
+import getpass
+
+OSX_MB_DEFAULT_DIRECTORY = "/private/var/root/Documents/maya/projects/default/"
+UBUNTU_MB_DEFAULT_DIRECTORY = "/home/" + str(getpass.getuser()) + "/maya/projects/default/scenes/"
+
+# System specific paths
+MB_DEFAULT_DIRECTORY = UBUNTU_MB_DEFAULT_DIRECTORY
 
 SUBDIVISIONS = 3
 OUT_NAME = "shirt"

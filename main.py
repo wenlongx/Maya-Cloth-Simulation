@@ -19,11 +19,6 @@
 # /usr/autodesk/maya2015-x64/bin/mayapy
 
 
-OSX_RENDER_DIR = "/private/var/root/Documents/maya/projects/default/images/"
-OSX_MB_DIR = "/private/var/root/Documents/maya/projects/default/"
-UBUNTU_RENDER_DIR = ""
-UBUNTU_MB_DIR = ""
-
 import sys
 import maya.standalone
 maya.standalone.initialize()
@@ -36,6 +31,12 @@ import math
 import ntpath
 import presets
 import csv
+import getpass
+
+OSX_RENDER_DIR = "/private/var/root/Documents/maya/projects/default/images/"
+OSX_MB_DIR = "/private/var/root/Documents/maya/projects/default/"
+UBUNTU_RENDER_DIR = "/home/" + str(getpass.getuser()) + "/maya/projects/default/images/"
+UBUNTU_MB_DIR = "/home/" + str(getpass.getuser()) + "/maya/projects/default/"
 
 # Correct Version
 if sys.version_info[0] >= 3:
@@ -44,8 +45,8 @@ else:
     get_input = raw_input
 
 # System specific paths
-RENDER_DEFAULT_DIRECTORY = OSX_RENDER_DIR
-MB_DEFAULT_DIRECTORY = OSX_MB_DIR
+RENDER_DEFAULT_DIRECTORY = UBUNTU_RENDER_DIR
+MB_DEFAULT_DIRECTORY = UBUNTU_MB_DIR
 
 # in terms of frames
 SETTLE_TIME = 100
@@ -138,8 +139,11 @@ def start():
         render_frame(str(fold_num+1))
         fold_num += 1
 
-        #timing
+        # timing
         print("The fold took " + str(time.clock() - start_time) + " seconds")
+	
+	# change permissions
+	os.system("sudo chown -R " + str(getpass.getuser()) + " " + str(os.path.dirname(os.path.realpath(__file__))) + "/folded/")
 
 # setup functions
 def setup_scene(name=sys.argv[1]):
@@ -278,10 +282,9 @@ def render_frame(out):
 
 # export functions
 def export_mb(name):
-    cmds.file(rename = name + ".mb")
+    cmds.file(rename = os.path.dirname(os.path.realpath(__file__)) + "/" + name + ".mb")
     cmds.file(save = True, type = "mayaBinary")
-    os.system("cp " + MB_DEFAULT_DIRECTORY + name + \
-        ".mb " + os.path.dirname(os.path.realpath(__file__)) + "/folded/snapshots/" + name + ".mb")
+    #os.system("cp " + MB_DEFAULT_DIRECTORY + name + ".mb " + os.path.dirname(os.path.realpath(__file__)) + "/folded/snapshots/" + name + ".mb")
 def export_obj(name):
     obj_path = os.path.dirname(os.path.realpath(__file__)) + "/folded/snapshots/" + name + ".obj"
     print("Saving file as " + obj_path)
