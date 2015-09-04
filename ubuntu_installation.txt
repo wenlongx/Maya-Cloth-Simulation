@@ -1,0 +1,55 @@
+# Copy/Paste the commands into terminal
+# !!!!! YOU HAVE TO EDIT LINES 23 (serial number replaces the 123-4567890) and 32 (path to maya2015_setup)
+ 
+mkdir maya2015_setup
+cd ~./maya2015_setup
+# wget http://download.autodesk.com/us/support/files/maya_2015_service_pack_6/Autodesk_Maya_2015_SP6_EN_Linux.tgz
+tar xvf Autodesk_Maya_2015_SP6_EN_Linux.tgz
+export RPM_INSTALL_PREFIX=/usr
+export LD_LIBRARY_PATH=/opt/Autodesk/Adlm/R5/lib64/
+LIBCRYPTO="/usr/lib/x86_64-linux-gnu/libcrypto.so.10"
+LIBSSL="/usr/lib/x86_64-linux-gnu/libssl.so.10"
+# xfs, mesa-utils, libglw1-mesa may not install, but doesn't seem to be an issue
+sudo apt-get install -y  alien csh tcsh libaudiofile-dev libglw1-mesa elfutils libglw1-mesa-dev mesa-utils xfstt ttf-liberation xfonts-100dpi xfonts-75dpi ttf-mscorefonts-installer libfam0 libfam-dev
+# this step can take up to 30 minutes
+for i in *.rpm; do sudo alien -cv $i; done
+sudo dpkg -i *.deb
+sudo mkdir /usr/tmp
+sudo chmod 777 /usr/tmp
+xset +fp /usr/share/fonts/X11/100dpi/
+xset +fp /usr/share/fonts/X11/75dpi/
+sudo cp libadlmPIT.so.9 /usr/lib/
+sudo cp libadlmutil.so.9 /usr/lib/
+sudo echo -e 'MAYA_LICENSE=unlimited\nMAYA_LICENSE_METHOD=standalone' > /usr/autodesk/maya2015-x64/bin/License.env  /usr/autodesk/maya2015-x64/bin/adlmreg -i S 657G1 657G1 2015.0.0.F 123-4567890 /var/opt/Autodesk/Adlm/Maya2015/MayaConfig.pit
+sudo ln -s /usr/autodesk/maya2015-x64/support/openssl/libcrypto.so.6 /usr/autodesk/maya2015-x64/lib/libcrypto.so.10
+sudo ln -s /usr/lib/x86_64-linux-gnu/libtiff.so.5.2.0 /usr/lib/libtiff.so.3
+sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so.8.0.2 /usr/lib/libjpeg.so.62
+sudo rm /usr/lib/libfam.so.0
+sudo ln -s /usr/lib/libfam.so.0.0.0 /usr/lib/libfam.so.0
+sudo sh -c "echo 'setenv LC_ALL en_US.UTF-8' >> /usr/autodesk/maya2015-x64/bin/maya2015"
+/usr/autodesk/maya2015-x64/bin/licensechooser /usr/autodesk/maya2015-x64/ standalone 657G1 maya
+sudo -i
+cd /path/to/maya2015_setup
+export MAYA_LOCATION=/usr/autodesk/maya2015-x64/
+export LD_LIBRARY_PATH=/opt/Autodesk/Adlm/R9/lib64/
+echo "int main (void) {return 0;}" > mayainstall.c
+gcc mayainstall.c
+sudo mv /usr/bin/rpm /usr/bin/rpm_backup
+sudo cp a.out /usr/bin/rpm
+chmod +x ./setup
+sudo ./setup
+#Then, follow the GUI, Accept, put your Serial Number and the 657G1 thing, next
+#and for the only first time, to activate and stuff
+exit #from root concept
+sudo maya
+ 
+# IF YOU HAVE A CRASH, do the following :
+sudo mkdir /usr/autodesk/maya2015-x64/plugin-backup
+sudo mv /usr/autodesk/maya2015-x64/plug-ins/bifrost /usr/autodesk/maya2015-x64/plugin-backup/
+
+# If you're missing libssl.so.10 or libcrypto.so.10, do the following :
+sudo apt-get update
+sudo apt-get install libssl1.0.0 libssl-dev
+cd /lib/x86_64-linux-gnu
+sudo ln -s libssl.so.1.0.0 libssl.so.10
+sudo ln -s libcrypto.so.1.0.0 libcrypto.so.10
