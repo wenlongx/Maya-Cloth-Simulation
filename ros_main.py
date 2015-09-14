@@ -1,31 +1,14 @@
-# Takes 1 mandatory and 1 optional command line argument
-# User inputs two XYZ coordinates, which represent the point on the shirt to grasp, and the point which it is folded to
-#   1) mandatory: OBJ file which provides the model to fold
-#   2) optional: CSV file which provides the control points (key points used to create the model), to track
+#!/usr/bin/env python
 
-# Generates in the /folded/ directory
-#   1) an IFF image called /images/shirtX.iff, where X is the fold number
-#   2) a Maya binary called /snapshots/shirtX.mb, where X is the fold number
-#   3) an OBJ file called /snapshots/shirtX.obj, where X is the fold number
-# Conditional Outputs:
-#   4) if the variable STEPS is greater than 1, OBJ files called /snapshots/shirtX_Y.obj, where X is the fold number and Y is the sub-step
-#   5) if a CSV file is provided, CSV files called /snapshots/shirtX.csv or /snapshots/shirtX_Y.csv for all obj models
-# Other Outputs:
-#   1) files called cacheX.xml, where X is the fold number, are generated in /cache/. These files should not be edited/removed. They're used in the Maya binary files to record the simulation of the shirt being folded.
-
-# Mac OSX Mayapy path
-# /Applications/Autodesk/maya2015/Maya.app/Contents/bin/mayapy
-# Ubuntu Mayapy path
-# /usr/autodesk/maya2015-x64/bin/mayapy
-
+import rospy
+from std_msgs.msg import String
 import sys
-import os
-
 import maya.standalone
 maya.standalone.initialize()
 import maya.cmds as cmds
 import maya.mel as mel
 import maya.OpenMaya as om
+import os
 import time
 import math
 import ntpath
@@ -33,14 +16,14 @@ import presets
 import csv
 import getpass
 
-OSX_RENDER_DIR = "/Users/" + str(os.environ['SUDO_USER']) + "/Documents/maya/projects/default/images/"
-OSX_MB_DIR = "/Users/" + str(os.environ['SUDO_USER']) + "/Documents/maya/projects/default/"
-UBUNTU_RENDER_DIR = "/home/" + str(os.environ['SUDO_USER']) + "/maya/projects/default/images/"
-UBUNTU_MB_DIR = "/home/" + str(os.environ['SUDO_USER']) + "/maya/projects/default/"
+OSX_RENDER_DIR = "/Users/" + str(getpass.getuser()) + "/Documents/maya/projects/default/images/"
+OSX_MB_DIR = "/Users/" + str(getpass.getuser()) + "/Documents/maya/projects/default/"
+UBUNTU_RENDER_DIR = "/home/" + str(getpass.getuser()) + "/maya/projects/default/images/"
+UBUNTU_MB_DIR = "/home/" + str(getpass.getuser()) + "/maya/projects/default/"
 
 # System specific paths
-RENDER_DEFAULT_DIRECTORY = UBUNTU_RENDER_DIR
-MB_DEFAULT_DIRECTORY = UBUNTU_MB_DIR
+RENDER_DEFAULT_DIRECTORY = OSX_RENDER_DIR
+MB_DEFAULT_DIRECTORY = OSX_MB_DIR
 
 # Correct Version
 if sys.version_info[0] >= 3:
@@ -72,10 +55,32 @@ NUM_ARMS = 2
 STEPS = 5
 # Whether to use the model BAXTER gripper instead of the default generated pointer
 BAXER_POINTER = False
+# Subdivisions for generating shirt model
+SUBDIVISIONS = 3
 
+def callback(data):
+	input = data.data
+	instr_num = input[0]
+	nums = input[2:end].split(" ")
+	if (len(nums)%3 != 0):
+		break
+	else:
+		nums = [nums[i:i+3] for i in range(0, len(nums), 3)]
+
+	# Generate Shirt
+	if (instr_num == '1'):
+	# Fold Shirt
+	elif (instr_num == '2'):
+	else:
+		pass
 
 # main function
 def start():
+	rospy.init_node('listener', anonymous=True)
+	rospy.Subscriber('model', String, callback)
+	rospy.spin()
+
+
     # Check if optional argument is used
     global num_cp
     num_cp = 0
@@ -145,6 +150,23 @@ def start():
 	# change permissions
 	# os.system("sudo chown -R " + str(getpass.getuser()) + " " + str(os.path.dirname(os.path.realpath(__file__))))
 
+# Has to do with GENERATING# Create polygon called shirt based on points
+def generate(pts):
+    """Takes in a list of tuples (set of 3D points) and generates a polygon model"""
+    cmds.polyCreateFacet(name="shirt", p=points)
+    cmds.polyTriangulate()
+    cmds.polyQuad(angle=90)
+    cmds.polySubdivideFacet(dv=SUBDIVISIONS)
+    cmds.polyTriangulate()
+    
+    # Center shirt on origin
+    centerX = cmds.objectCenter("shirt", x = True, gl = True)
+    centerY = cmds.objectCenter("shirt", y = True, gl = True)
+    centerZ = cmds.objectCenter("shirt", z = True, gl = True)
+    cmds.move(-centerX, -centerY, -centerZ, "shirt", absolute=True)
+
+
+# Has to do with FOLDING
 # setup functions
 def setup_scene(name=sys.argv[1]):
     # imports shirt, scales to fit, converts to ncloth
@@ -426,4 +448,3 @@ def bake(start, end):
     cmds.select("shirt")
     cmds.bakeResults(simulation=True, controlPoints=True, shape=True, time=(start, end))
 '''
-

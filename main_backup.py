@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Takes 1 mandatory and 1 optional command line argument
 # User inputs two XYZ coordinates, which represent the point on the shirt to grasp, and the point which it is folded to
 #   1) mandatory: OBJ file which provides the model to fold
@@ -18,14 +20,15 @@
 # Ubuntu Mayapy path
 # /usr/autodesk/maya2015-x64/bin/mayapy
 
+import rospy
+from std_msgs.msg import String
 import sys
-import os
-
 import maya.standalone
 maya.standalone.initialize()
 import maya.cmds as cmds
 import maya.mel as mel
 import maya.OpenMaya as om
+import os
 import time
 import math
 import ntpath
@@ -33,14 +36,14 @@ import presets
 import csv
 import getpass
 
-OSX_RENDER_DIR = "/Users/" + str(os.environ['SUDO_USER']) + "/Documents/maya/projects/default/images/"
-OSX_MB_DIR = "/Users/" + str(os.environ['SUDO_USER']) + "/Documents/maya/projects/default/"
-UBUNTU_RENDER_DIR = "/home/" + str(os.environ['SUDO_USER']) + "/maya/projects/default/images/"
-UBUNTU_MB_DIR = "/home/" + str(os.environ['SUDO_USER']) + "/maya/projects/default/"
+OSX_RENDER_DIR = "/Users/" + str(getpass.getuser()) + "/Documents/maya/projects/default/images/"
+OSX_MB_DIR = "/Users/" + str(getpass.getuser()) + "/Documents/maya/projects/default/"
+UBUNTU_RENDER_DIR = "/home/" + str(getpass.getuser()) + "/maya/projects/default/images/"
+UBUNTU_MB_DIR = "/home/" + str(getpass.getuser()) + "/maya/projects/default/"
 
 # System specific paths
-RENDER_DEFAULT_DIRECTORY = UBUNTU_RENDER_DIR
-MB_DEFAULT_DIRECTORY = UBUNTU_MB_DIR
+RENDER_DEFAULT_DIRECTORY = OSX_RENDER_DIR
+MB_DEFAULT_DIRECTORY = OSX_MB_DIR
 
 # Correct Version
 if sys.version_info[0] >= 3:
